@@ -22,7 +22,7 @@ ui <- fluidPage(
                     'Maantiede ja geologia' = 1044, 'Kemia' = 1045, 'Bio- ja ympäristötieteet' = 1046, 'Lääketieteellinen' = 1051,
                     'Oikeustieteellinen' = 1061, 'Psykologia' = 1071, 'Teologia' = 1091, 'Valtio-oppi' = 1111,
                     'Taloustiede' = 1112, 'Sosiaalityö' = 1113, 'Sosiaalipsykologia' = 1114, 'Viestintä' = 1115,
-                    'Sosiologia' = 1116, 'Yhteiskunnallinen muutos' = 1117, 'Farmaseutti' = 1121, 'Proviisori' = 1122, 'Maataloustieteet' = 1131,
+                    'Sosiologia ja sosiaalipolitiikka' = 1116, 'Yhteiskunnallinen muutos' = 1117, 'Farmaseutti' = 1121, 'Proviisori' = 1122, 'Maataloustieteet' = 1131,
                     'Elintarviketieteet' = 1132, 'Metsätieteet' = 1133,
                     'Soveltavat taloustieteet ja liiketaloustiede' = 1134, 'Eläinlääketieteellinen' = 1141,
                     'Hammaslääketieteellinen' = 1151, 'Filosofia' = 10110),
@@ -41,7 +41,7 @@ ui <- fluidPage(
     tabPanel(title = "Hajontakuva, tiedekunta", id="Hajontakuva_tdk",
       
       fluidRow(
-        column(5,
+        column(3,
           selectInput(inputId = "tdk",
                       label = "Valitse tiedekunta",
                       choices=tiedekunnat, selected=12)
@@ -49,10 +49,14 @@ ui <- fluidPage(
         column(2,
           radioButtons(inputId = "vuosi_tdk", label="Valmistumisvuosi", choices=list(2011, 2009, 2007, 2005, 2003), selected = 2011)
         ),
-        column(5,
+        column(3,
           textInput('filenameTdk', "Tiedostonimi"),
           downloadButton('savePlotTdk', 'Lataa kuvaaja')
-        )
+        ),
+        column(3,
+          fluidRow(
+          sliderInput('yokehrangetdk', "Yliopisto-opiskelu kehitti", min = 1, max = 6, value= c(1,6))),
+          sliderInput('tettrangetdk', "Työelämän vaatimus", min = 1, max = 6, value= c(1,6)))
       ),
       hr(),
       plotOutput("Hajontakuva_tdk", width="100%", height="700px"),
@@ -62,7 +66,7 @@ ui <- fluidPage(
     
     tabPanel(title="Hajontakuva, oppialaryhmä", id="Hajontakuva_koulutusala",
       fluidRow(
-        column(5,
+        column(3,
           selectInput(inputId="kouala",
             label = "Valitse oppialaryhmä",
             choices=oppialaryhmat, selected=12)
@@ -70,10 +74,14 @@ ui <- fluidPage(
         column(2,
           radioButtons(inputId = "vuosi_kouala", label="Valmistumisvuosi", choices=list(2011, 2009, 2007, 2005, 2003), selected = 2011)    
         ),
-        column(5,
+        column(3,
           textInput('filenameKouala', "Tiedostonimi"),
           downloadButton('savePlotKouala', 'Lataa kuvaaja')
-        )
+        ),
+        column(3,
+          fluidRow(
+          sliderInput('yokehrangekouala', "Yliopisto-opiskelu kehitti", min = 1, max = 6, value= c(1,6))),
+          sliderInput('tettrangekouala', "Työelämän vaatimus", min = 1, max = 6, value= c(1,6)))
       ),
       hr(),
       plotOutput("Hajontakuva_kouala", width="100%", height="700px"),
@@ -152,7 +160,9 @@ ui <- fluidPage(
            h3("Luokat"),
            p("Sovelluksessa on käytetty kahta luokitusta. Aineistoa voidaan tarkastella tiedekunnittain. On huomioitava, että tiedekuntajako vastaa vuoden 2017 tiedekuntajakoa. Tämä vaikuttaa myös vanhoihin tuloksiin.
            Oppialaryhmittely on aineistopohjainen luokittelu, jonka avulla päästään kiinni hienojakoisempaan tietoon. Oppialaryhmittely perustuu tiedekuntarajoihin paitsi filosofian ja tilastotieteen kohdalla. Lisätietoja
-           oppialaryhmittelystä Helsingin yliopiston Urapalveluista."),
+           oppialaryhmittelystä Helsingin yliopiston Urapalveluista. Oppialaryhmien sisältämät pääaineet löytää"),a(href="https://github.com/tvkangas/osaamistutka/blob/master/osaamistutkaHYOppialaryhmat.xlsx", "täältä"),
+           h1("Vastausäärät ja vastausprosentit"),
+           p("Vastaajamäärät ja vastausprosentit löytää"), a(href="https://github.com/tvkangas/osaamistutka/blob/master/osaamistutkaVastausmaaratVastausprosentit.xlsx", "täältä"),
            h1("Aineiston suojaus"),
            p("Koska sovellus pyörii ulkopuolisela palvelimella, on vastaajien anonymiteetista jouduttu huolehtimaan. Ulkoiselle palvelimelle ei ole viety 'raakadataa', vaan 
            valmiiksi laskettu aineisto. Näin ollaan vältytty vastauskohtaisen aineiston viemiseltä. Aineistosta ei voida päätellä yksittäisen vastauksen tuloksia."),
@@ -160,12 +170,14 @@ ui <- fluidPage(
            p("Palautetta voi lähettää suoraan sähköpostiosoitteeseen tuukka.kangas@helsinki.fi"),
            h1("Yhteystiedot ja toteutus"),
            p("Sovelluksen on kehittänyt Tuukka Kangas (tuukkavkangas@gmail.com). Sovellus on tehty R-kielellä. Sovelluksessa on hyödynnetty avointa shiny-pakettia sekä muita tarpeellisia
-           paketteja. Sovelluksen lähdekoodi tullaan julkaisemaan sovelluksen viimeistelyn jälkeen. Sovellus on kehitetty harjoittelujakson aikana Helsingin yliopiston urapalveluissa"),
+           paketteja. Sovelluksen lähdekoodi on julkaistu"), a(href="https://github.com/tvkangas/osaamistutka/blob/master/app.R", "täällä."), p("Sovellus on kehitetty harjoittelujakson aikana Helsingin yliopiston urapalveluissa"),
            h1("Päivitykset"),
            p("3.2. Ensimmäinen versio viety ulkoiselle palvelimelle."),
            p("1.3. Päivitys, bugien korjausta."),
            p("3.3. Stilistisiä muutoksia, oppialaryhmien päivitys."),
-           p("28.3. Oppialaryhmien päivitys, vastaajam��r�t ja vastausprosentit, oppialaryhmien selitykset.")
+           p("28.3. Oppialaryhmien päivitys, vastaajamäärät ja vastausprosentit, oppialaryhmien selitykset."),
+           p("4.4. Uusi toiminnallisuus."),
+           p("10.4. Päivitys")
            )
            
   )
@@ -187,8 +199,15 @@ server <- function(input, output) {
   })
   
   plotInputTDK = function() {
+    yoAlaraja <- input$yokehrangetdk[1]
+    yoYlaraja <- input$yokehrangetdk[2]
+    tettAlaraja <- input$tettrangetdk[1]
+    tettYlaraja <- input$tettrangetdk[2]
+    
     newdata <- mydataHajonta[ which(mydataHajonta$tdk==input$tdk
-                                    & mydataHajonta$valmvuosi == input$vuosi_tdk), ]
+                            & mydataHajonta$valmvuosi == input$vuosi_tdk & mydataHajonta$yo >= yoAlaraja 
+                            & mydataHajonta$yo <= yoYlaraja & mydataHajonta$tett >= tettAlaraja
+                            & mydataHajonta$tett <= tettYlaraja), ]
     p <- ggplot(newdata, aes(yo, tett)) +
     geom_vline(xintercept = 4, color='black', lty=2) +
       geom_hline(yintercept = 4, color='black', lty=2) +
@@ -202,7 +221,7 @@ server <- function(input, output) {
       geom_text_repel(aes(label=muuttuja), force = 6, size = 6) +
       xlab("Yliopisto-opiskelu kehitti") +
       ylab("Työelämä vaatii") +
-      labs(caption = paste0("Katso lyhenteet kuvan alta\n",newdata$tdknimi, "\n", input$vuosi_tdk ))+
+      labs(caption = paste0("Katso lyhenteet kuvan alta\n",newdata$tdknimi, "\n", input$vuosi_tdk, "\n"))+
       theme(plot.caption = element_text(size = 14))+
       coord_fixed(ratio=1) +
       ggtitle("Osaamistutka" )
@@ -248,8 +267,15 @@ server <- function(input, output) {
   })
   
   plotInputKouala = function() {
+    yoAlaraja <- input$yokehrangekouala[1]
+    yoYlaraja <- input$yokehrangekouala[2]
+    tettAlaraja <- input$tettrangekouala[1]
+    tettYlaraja <- input$tettrangekouala[2]
+
     newdata <- mydataHajonta[ which(mydataHajonta$kouala==input$kouala
-                                    & mydataHajonta$valmvuosi == input$vuosi_kouala), ]
+                                    & mydataHajonta$valmvuosi == input$vuosi_kouala & mydataHajonta$yo >= yoAlaraja 
+                                    & mydataHajonta$yo <= yoYlaraja & mydataHajonta$tett >= tettAlaraja
+                                    & mydataHajonta$tett <= tettYlaraja), ]
     p <- ggplot(newdata, aes(yo, tett)) +
       geom_vline(xintercept = 4, color='black', lty=2) +
       geom_hline(yintercept = 4, color='black', lty=2) +
